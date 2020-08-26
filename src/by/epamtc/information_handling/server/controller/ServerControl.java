@@ -1,5 +1,6 @@
 package by.epamtc.information_handling.server.controller;
 
+import by.epamtc.information_handling.client.Client;
 import by.epamtc.information_handling.server.bean.Text;
 import by.epamtc.information_handling.server.dao.DAOFactory;
 import by.epamtc.information_handling.server.dao.parsing.BlockParse;
@@ -9,6 +10,7 @@ import by.epamtc.information_handling.server.service.impl.TextServiceImpl;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ServerControl {
 
@@ -28,18 +30,14 @@ public class ServerControl {
         return instance;
     }
 
-
-    //        System.out.println("весь текст");
-//        System.out.println(text.getStringView());
     public void control() throws IOException {
-
 
         while (true) {
             System.out.println("Waiting...");
             Socket clientSocket = serverSocket.accept();
+
             System.out.println("Creating empty object for user...");
             Text text = daoFactory.getTxtTextDAO().getTextObject();
-
 
             InputStream inputStream = clientSocket.getInputStream();
             OutputStream outputStream = clientSocket.getOutputStream();
@@ -49,23 +47,29 @@ public class ServerControl {
 
             String line = null;
 
-            while (line==null){
-                line = objectInputStream.readUTF();
-            }
+            line = objectInputStream.readUTF();
+
+            System.out.println("выбор: " + line);
+
             switch (line) {
                 case "1":
                     textService.printSentencesForTheNumberOfWords(text);
+                    break;
                 case "2":
                     textService.replaceWordsWithSubstring(text, 3, 4, "AAA");
+                    break;
                 case "3":
                     textService.replaceFirstWithLastInSentences(text);
+                    break;
                 case "4":
+                    break;
                 default:
                     System.out.println("Wrong action!!!");
             }
 
             objectOutputStream.writeObject(text);
             objectOutputStream.flush();
+
         }
     }
 }

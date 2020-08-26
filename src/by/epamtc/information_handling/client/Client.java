@@ -37,11 +37,10 @@ public class Client {
 
 
             Text text = (Text) objectInputStream.readObject();
-            for (Sentence sentence : text.getSentences()) {
-                System.out.println(sentence.getStringView());
-            }
 
+            System.out.println(text.getStringView());
 
+            clientSocket.close();
         }
     }
 }
